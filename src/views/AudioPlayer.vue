@@ -26,8 +26,8 @@
 import { ref, onMounted } from 'vue'
 
 const tracks = [
-  { title: '경전의 시작', src: '/audio/audio1.mp3' },
-  { title: '고요한 흐름', src: '/audio/audio2.mp3' },
+  { title: '경전의 시작', src: '/hodot_chant/audio/audio1.mp3' },
+  { title: '고요한 흐름', src: '/hodot_chant/audio/audio2.mp3' },
 ]
 
 const currentIndex = ref(0)
