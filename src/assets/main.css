@@ -1,0 +1,145 @@
+@import './base.css';
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: block;   /* flex 제거 */
+  }
+
+  #app {
+    display: block;   /* grid 제거 */
+    max-width: 800px;
+    margin: 0 auto;
+  }
+}
+
+/* ===== 경전 애니메이션 ===== */
+
+.fade-enter-active {
+  transition: all 0.8s ease;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 한 줄씩 등장 */
+.line {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeUp 0.9s ease forwards;
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 감성 추가 (선택) */
+.line {
+  text-shadow: 0 0 8px rgba(255, 215, 150, 0.2);
+}
+
+/* 블록 단위 애니메이션 */
+.sutra-block {
+  text-align: center;   /* ← 이거 필수 */
+  margin: 60px 0;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s ease forwards;
+}
+
+/* 텍스트 스타일 */
+.kor {
+  line-height: 1.8;
+  font-size: 20px;
+  color: #fff;
+}
+
+.han {
+  font-size: 14px;
+  opacity: 0.6;
+  margin-top: 6px;
+}
+
+.bun {
+  font-size: 13px;
+  opacity: 0.4;
+  margin-top: 4px;
+}
+
+.content {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 80px 20px;
+}
+
+.kor,
+.han,
+.bun {
+  text-align: center;
+}
+
+.player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 12px 20px;
+  color: #fff;
+}
+
+.controls button {
+  margin-left: 10px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.controls input[type="range"] {
+  width: 100px;
+  margin-left: 10px;
+  cursor: pointer;
+}
