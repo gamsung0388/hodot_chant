@@ -7,6 +7,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/hogot-sutra/',  // ⭐ repo 이름
   plugins: [
     vue(),
     vueJsx(),
