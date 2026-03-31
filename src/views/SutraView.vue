@@ -1,7 +1,20 @@
 <template>
+<div class="sutra-bg">
+    <button class="back-btn" @click="goHome">← 홈으로</button>
+    <div class="fireflies-layer">
+        <div 
+          v-for="n in 20" 
+          :key="n" 
+          class="firefly" 
+          :class="{ caught: caughtFireflies.includes(n) }"
+          :style="getFireflyStyle(n)"
+          @click="catchFirefly(n)"
+        ></div>
+    </div>
+
     <div class="content">
-        <h1 style="text-align: center;">洪狐道經</h1>
-        <h1 style="text-align: center;">[홍호도경]</h1>
+        <h1 class="main-title" style="text-align: center;">洪狐道經</h1>
+        <h1 class="sub-title" style="text-align: center;">[홍호도경]</h1>
         <div
             v-for="(line, index) in sutraLines"
             :key="index"
@@ -14,10 +27,18 @@
         </div>
     </div>
     <AudioPlayer />
+</div>
 </template>
 
 <script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import AudioPlayer from './AudioPlayer.vue'
+import { useGalleryStore } from '../stores/gallery.js'
+
+const router = useRouter()
+const galleryStore = useGalleryStore()
+const goHome = () => router.push('/')
 
 const sutraLines = [
     {
@@ -171,4 +192,171 @@ const sutraLines = [
         bun: "나무 가애보살 마하살",
     },
 ]
+
+const getFireflyStyle = (n) => {
+  const randomX = Math.random() * 100;
+  const randomY = Math.random() * 100;
+  const delay = Math.random() * 5;
+  const duration = 8 + Math.random() * 8; 
+  return {
+    left: `${randomX}%`,
+    top: `${randomY}%`,
+    animationDuration: `${duration}s`,
+    animationDelay: `${delay}s`,
+  };
+}
+
+const handleScroll = () => {
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight;
+  const clientHeight = document.documentElement.clientHeight;
+
+  if (scrollTop + clientHeight >= scrollHeight - 50) {
+    galleryStore.unlockImage(1)
+  }
+}
+
+const firefliesCaughtCount = ref(0)
+const caughtFireflies = ref([])
+
+const catchFirefly = (n) => {
+  if (caughtFireflies.value.includes(n)) return
+  caughtFireflies.value.push(n)
+  firefliesCaughtCount.value++
+  
+  if (firefliesCaughtCount.value === 3) {
+    galleryStore.unlockImage(2)
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
+
+<style>
+body {
+  margin: 0;
+  background-color: #010705;
+}
+</style>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&display=swap');
+
+.sutra-bg {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #061f14 0%, #010705 100%);
+  color: #d9f99d; 
+  font-family: 'Nanum Myeongjo', serif;
+  padding: 40px 0 80px 0; 
+  overflow-x: hidden;
+  position: relative;
+}
+
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: transparent;
+  border: 1px solid #a3e635;
+  color: #a3e635;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+  z-index: 20;
+}
+.back-btn:hover {
+  background: #a3e635;
+  color: #010705;
+}
+
+.main-title {
+  color: #bef264;
+  text-shadow: 0 0 15px rgba(190, 242, 100, 0.4);
+  margin-bottom: 10px;
+}
+.sub-title {
+  color: #a3e635;
+  font-size: 1.2rem;
+  margin-top: 0;
+  margin-bottom: 50px;
+  font-weight: 400;
+}
+
+.sutra-block {
+  text-align: center;
+  margin-bottom: 40px;
+  opacity: 0; 
+  animation: floatFade 2s ease-out forwards;
+}
+
+.kor { margin: 5px 0; font-size: 1.1rem; color: #d9f99d; }
+.han { 
+  margin: 5px 0; 
+  font-size: 1.8rem; 
+  font-weight: 700; 
+  color: #ecfccb; 
+  text-shadow: 0 0 10px rgba(236, 252, 203, 0.2);
+}
+.bun { margin: 5px 0; font-size: 0.9rem; color: #84cc16; }
+
+.fireflies-layer {
+  position: fixed; 
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+.content {
+  position: relative;
+  z-index: 10;
+  max-width: 800px;
+  margin: 0 auto;
+  background: rgba(1, 7, 5, 0.75);
+  backdrop-filter: blur(4px);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+}
+
+.firefly {
+  position: absolute;
+  width: 14px; height: 14px;
+  background-color: #a3e635;
+  border-radius: 50%;
+  box-shadow: 0 0 15px 5px rgba(163, 230, 53, 0.4);
+  opacity: 0;
+  animation: drift ease-in-out infinite alternate;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: width 0.2s, height 0.2s, background-color 0.2s, opacity 0.5s;
+}
+
+.firefly:hover {
+  width: 20px; height: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 0 20px 8px rgba(255, 255, 255, 0.6);
+}
+
+.firefly.caught {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+@keyframes drift {
+  0% { transform: translateY(0); opacity: 0; }
+  30% { opacity: 0.8; }
+  70% { opacity: 0.5; }
+  100% { transform: translateY(-80px); opacity: 0; }
+}
+
+@keyframes floatFade {
+  0% { opacity: 0; transform: translateY(15px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+</style>
